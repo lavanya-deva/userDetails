@@ -1,0 +1,51 @@
+.container{
+    display: flex;
+    background-color: grey;
+    height: 100vh;
+    justify-content: center; 
+    align-items: center; 
+    margin:0px;
+}
+.login-card{
+    width: 300px;
+    background-color: white;
+    border-radius: 8px;
+  max-width: 1000px;
+  height: 200px;
+  
+    
+}
+.form-label{
+    margin-top: 10px;
+}
+.button-width{
+    width:80%;
+}
+.user-container{
+    display: flex;
+    background-color: gray;
+    height: 100vh;
+    border-radius: 4px;
+    align-items: center;
+   justify-content: center;
+    margin:0px;
+
+}
+.small-container{
+    background-color: white;
+    width: 80%;
+   height: 200px;
+padding-top: 15px;
+    margin: auto;
+    
+   
+    
+}
+.content{
+   
+    justify-content: space-between;
+}
+.table {
+    width: 100%;
+    border-collapse: collapse; 
+}
