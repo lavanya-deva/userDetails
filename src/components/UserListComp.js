@@ -11,17 +11,12 @@ import { deleteUser } from "./actions/Useraction";
 function UserListComp() {
     const [open, isOpen] = useState(false);
     const [searchQuery, setSearchQuery] = useState("");
-    //const user= useSelector((state)=>state.user.users);
-    //const user= useSelector((state)=>state.user.users);
-    // const user = useSelector((state) => state.user?.users ?? []);
     const user = useSelector(state => state.user.users);
     console.log("user", user);
     const [editData, setEditData] = useState('');
-
+    const [create, setCreate] = useState(false);
     const [edit, setEdit] = useState(false);
     console.log("edit", edit);
-
-    const [create, setCreate] = useState(false);
 
     const dispatch = useDispatch();
 
@@ -30,15 +25,17 @@ function UserListComp() {
     function handleCreateUser(e) {
         isOpen(true);
         setCreate(true);
+        setEdit(false);
     }
     function handleClose(e) {
         isOpen(false);
     }
-
     function handleEdit(e, user) {
-        isOpen(true);
         setEdit(true);
+        isOpen(true);
+       
         setEditData(user);
+        setCreate(false);
     }
     async function handleDelete(e, id) {
         e.preventDefault();
@@ -58,14 +55,16 @@ function UserListComp() {
 
     }
     const filteredUsers = user.filter(user =>
-        user.email.toLowerCase().includes(searchQuery.toLowerCase()) ||
         user.fname.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        user.lname.toLowerCase().includes(searchQuery.toLowerCase())
+        user.lname.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        user.email.toLowerCase().includes(searchQuery.toLowerCase())
     );
     console.log("filtered", filteredUsers);
 
-
-
+    const resetData=()=>{
+        setCreate(false);
+        setEdit(false);
+    }
     return (
         <>
             <nav style={{ backgroundColor: "black", height: "30px" }}>
@@ -93,7 +92,6 @@ function UserListComp() {
                             </tr>
                         </thead>
                         <tbody >
-
                             {filteredUsers.length > 0 ? (
                                 filteredUsers.map((user) => {
                                     return (
@@ -104,8 +102,6 @@ function UserListComp() {
                                             <td>{user.lname}</td>
                                             <td><div style={{ alignItems: "center" }}><button type="submit" onClick={(e) => handleEdit(e, user)}>Edit</button>
                                                 <button type="submit" onClick={(e) => handleDelete(e, user.id)}>Delete</button>
-
-
                                             </div></td>
                                         </tr>
                                     )
@@ -121,28 +117,18 @@ function UserListComp() {
                                             <td>{user.lname}</td>
                                             <td><div style={{ alignItems: "center" }}><button type="submit" onClick={(e) => handleEdit(e, user)}>Edit</button>
                                                 <button type="submit" onClick={(e) => handleDelete(e, user.id)}>Delete</button>
-
-
                                             </div></td>
                                         </tr>
                                     )
                                 })
                             )
-
                             }
-
                         </tbody>
-
                     </table>
-
-
-
-
                 </div>
-
-
             </div>
-            <CreateEditUser open={open} handleClose={handleClose} editval={edit} create={create} user={user} editData={editData} />
+            <CreateEditUser open={open} handleClose={handleClose} editVal={edit} create={create} user={user} editData={editData}
+            resetData={resetData} />
 
         </>
     )

@@ -1,49 +1,43 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import CloseIcon from "./CloseIcon";
 import "../Modal.css";
 import { useDispatch, useSelector } from 'react-redux';
 import { addUser, updateUser } from "./actions/Useraction";
 
-function CreateEditUser({ open, handleClose, editVal, create, editData }) {
-    console.log("edit", editVal, editData);
-
-
-    //const user= useSelector((state)=>state.user?.users);
-    // const user = useSelector((state) => state.user?.users || []);
+function CreateEditUser({ open, handleClose, editVal, create, editData,resetData }) {
     const user = useSelector(state => state.user.users);
     console.log("usrsdara", user);
     const dispatch = useDispatch();
     const [newUser, setnewUser] = useState({
         fname: '', lname: '', email: '', imgLink: ''
     })
-    const [currentUser, setCurrent] = useState({
-        fname: '', lname: '', email: '', imgLink: ''
-    })
-
     const handleChange = (e) => {
         const { name, value } = e.target;
         setnewUser({ ...newUser, [name]: value });
     }
+    useEffect(()=>{
+        if(editVal && editData){
+            setnewUser(editData)
+        }else{
+            setnewUser({ fname: '', lname: '', email: '', imgLink: '' });
+        }
+    },[editData,editVal])
 
     const handleSubmit = (e) => {
         e.preventDefault();
-
-        // dispath(addUser(newUser));
-
+        if(create){
         const id = user.length + 1;
         console.log("id", id);
         dispatch(addUser({
             ...newUser, id
         }));
-
         setnewUser({ fname: '', lname: '', email: '', imgLink: '' });
+         }else{
+            const editId= user.length+1;
+            dispatch(updateUser({...newUser,editId}));
+         }
         handleClose();
-    }
-
-    const handleNewChange = (e) => {
-        e.preventDefault();
-        const { name, value } = e.target;
-        setCurrent({ ...currentUser, [name]: value });
+        resetData();
     }
     if (!open) { return null }
     return (
@@ -52,7 +46,7 @@ function CreateEditUser({ open, handleClose, editVal, create, editData }) {
             <div className="modal-overlay ">
                 <div className="modal-content">
                     <button className="close-button" onClick={(e) => handleClose(e)}><CloseIcon />   </button>
-                    {create && <><h1 style={{ alignSelf: "flex-start" }}>Create User</h1><form>
+                    <h1 style={{ alignSelf: "flex-start" }}>{create ? "Create User" : "Edit User"}</h1><form>
 
                         <label>First Name <span className="required">*</span></label><br />
                         <input type="text" name="fname" value={newUser.fname} onChange={(e) => handleChange(e)} placeholder="Enter First Name" /><br />
@@ -72,38 +66,10 @@ function CreateEditUser({ open, handleClose, editVal, create, editData }) {
                             <div style={{ float: "right", marginRight: "20px", marginTop: "20px" }}>
 
                                 <button type="submit" onClick={(e) => handleClose(e)} style={{ backgroundColor: "grey" }}>Cancel</button>
-                                <button type="submit" onClick={(e) => handleSubmit(e)} style={{ marginLeft: "10px", backgroundColor: "skyblue" }}>Submit</button>
+                                <button type="submit" onClick={(e) => handleSubmit(e)} style={{ marginLeft: "10px", backgroundColor: "skyblue" }}>{create ? "Submit" : "Update"}</button>
                             </div>
                         </div>
-                    </form></>}
-
-                    {editVal && <><h1 style={{ alignSelf: "flex-start" }}>Edit User</h1><form>
-
-                        <label>First Name:</label><br />
-                        <input type="text" name="fname" value={editData.fname} onChange={(e) => handleNewChange(e)} placeholder="Enter First Name" /><br />
-                        <label style={{ marginTop: "10px" }}>Last Name:</label><br />
-                        <input type="text" name="lname" value={editData.lname} onChange={(e) => handleNewChange(e)} placeholder="Enter last Name" /><br />
-                        <label style={{ marginTop: "10px" }}>Email:</label><br />
-                        <input type="email" name="email" value={editData.email} onChange={(e) => handleNewChange(e)} placeholder="Enter email" /><br />
-                        <div>
-                            <label style={{ marginTop: "10px" }}>Image Link:</label><br />
-                            <input
-                                type="url"
-                                   name="imgLink"
-                                value={editData.imgLink}
-                                onChange={(e) => handleNewChange(e)}
-                                required /><br />
-                            <div style={{ float: "right", marginRight: "20px", marginTop: "20px" }}>
-
-                                <button type="submit" onClick={(e) => handleClose(e)} style={{ backgroundColor: "grey" }}>Cancel</button>
-                                <button type="submit" onClick={(e) => handleSubmit(e)} style={{ marginLeft: "10px", backgroundColor: "skyblue" }}>Submit</button>
-                            </div>
-                        </div>
-                    </form></>}
-
-
-
-
+                    </form>
                 </div>
 
             </div>
